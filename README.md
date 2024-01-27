@@ -65,3 +65,8 @@ and delete the wallets with
 kubectl delete secret $RELEASE_NAME-lnd-stack-alice-wallet-secret
 kubectl delete secret $RELEASE_NAME-lnd-stack-bob-wallet-secret
 ```
+
+# TODO
+- Better security should be considered if we move this to production
+- More configurability of the chart
+- More scripts (and functions) for easier operations (i.e. quickly open a new channel, create and pay invoices); maybe split run_demo.sh into smaller parts.
