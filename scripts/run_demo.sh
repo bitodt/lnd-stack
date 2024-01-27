@@ -76,7 +76,7 @@ sleep $BIGSTEP
 # Create blocks to validate the transaction
 echo Generating blocks to validate channel open...
 sleep $SMALLSTEP
-kubectl exec $BTCDPOD -- /start-btcctl.sh generate 3
+kubectl exec $BTCDPOD -- /start-btcctl.sh generate 7
 sleep $BIGSTEP
 
 # List Alice channels
@@ -112,12 +112,14 @@ CHANOUTPUTINDEX=$(echo $ALICECHANPOINT | awk -F ':' '{print $2}')
 # Close the channel
 echo Closing the channel...
 sleep $SMALLSTEP
-kubectl exec $ALICEPOD -- lncli --network=simnet closechannel --funding_txid=$CHANFUNDINGTXID --output_index=$CHANOUTPUTINDEX
+# Run the channel close in the background; sometimes it doesn't return even though the channel was closed. Need to debug
+kubectl exec $ALICEPOD -- lncli --network=simnet closechannel --funding_txid=$CHANFUNDINGTXID --output_index=$CHANOUTPUTINDEX &
+sleep $BIGSTEP
 
 # Create blocks to validate the transaction
 echo Generating blocks to validate channel close...
 sleep $SMALLSTEP
-kubectl exec $BTCDPOD -- /start-btcctl.sh generate 3
+kubectl exec $BTCDPOD -- /start-btcctl.sh generate 7
 sleep $BIGSTEP
 
 # Check Alice balance
