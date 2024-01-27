@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{template "alice.fullname" .}}-svc
+spec:
+  selector:
+    app: {{template "alice.fullname" .}}
+  ports:
+    - protocol: TCP
+      port: 9735
+      targetPort: 9735

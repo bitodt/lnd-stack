@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{template "bob.fullname" .}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{template "bob.fullname" .}}
+  template:
+    metadata:
+      labels:
+        app: {{template "bob.fullname" .}}
+    spec:
+      containers:
+      - name: bob
+        image: orfeas0/lnd:latest
+        command: ["./start-lnd.sh", "--wallet-unlock-password-file=/root/.lnd/data/chain/bitcoin/simnet/walletpassword"]
+        env:
+        - name: RPCHOST
+          value: {{template "btcd.fullname" .}}
+        - name: RPCUSER
+          valueFrom:
+            secretKeyRef:
+              name: {{template "btcd.fullname" .}}-secret
+              key: rpcuser
+        - name: RPCPASS
+          valueFrom:
+            secretKeyRef:
+              name: {{template "btcd.fullname" .}}-secret
+              key: rpcpass
+        - name: NETWORK
+          value: simnet
+        - name: BACKEND
+          value: btcd
+        volumeMounts:
+        - name: lnd-pvc
+          mountPath: /root/.lnd
+        - name: shared-persistent-storage
+          mountPath: /rpc
+        - name: secret-volume
+          mountPath: /tmp/secret-volume
+      volumes:
+      - name: lnd-pvc
+        persistentVolumeClaim:
+          claimName: {{template "bob.fullname" .}}-pvc
+      - name: shared-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{template "fullname" .}}-shared-pvc
+      - name: secret-volume
+        secret:
+          secretName: {{template "bob.fullname" .}}-wallet-secret
+

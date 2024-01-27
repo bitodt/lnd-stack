@@ -1,0 +1,15 @@
+btcd:
+  secret:
+    rpcuser: cnBjdXNlcg==
+    rpcpass: cnBjcGFzcw==
+  pvc:
+    size: 10Gi
+shared:
+  pvc:
+    size: 1Gi
+alice:
+  pvc:
+    size: 5Gi
+bob:
+  pvc:
+    size: 5Gi

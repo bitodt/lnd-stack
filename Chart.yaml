@@ -1,0 +1,7 @@
+apiVersion: v2
+name: lnd-stack
+description: A btcd node with 2 lnd nodes. Wallet initalised by lndinit jobs.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+icon: btcln.png

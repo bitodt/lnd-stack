@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{template "btcd.fullname" .}}
+spec:
+  selector:
+    app: {{template "btcd.fullname" .}}
+  ports:
+    - protocol: TCP
+      port: 18556
+      targetPort: 18556

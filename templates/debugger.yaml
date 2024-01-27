@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{template "debugger.fullname" .}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{template "debugger.fullname" .}}
+  template:
+    metadata:
+      labels:
+        app: {{template "debugger.fullname" .}}
+    spec:
+      containers:
+      - name: {{template "debugger.fullname" .}}
+        image: debian:latest
+        command: ["sleep", "infinity"]
+        volumeMounts:
+        - name: lnd-alice-pvc
+          mountPath: /root/alice.lnd
+        - name: lnd-bob-pvc
+          mountPath: /root/bob.lnd  
+        - name: shared-pvc
+          mountPath: /rpc
+        - name: btcd-pvc
+          mountPath: /data
+        - name: secret-volume-alice
+          mountPath: /tmp/secret-volume-alice
+        - name: secret-volume-bob
+          mountPath: /tmp/secret-volume-bob
+      volumes:
+      - name: lnd-alice-pvc
+        persistentVolumeClaim:
+          claimName: {{template "alice.fullname" .}}-pvc
+      - name: shared-pvc
+        persistentVolumeClaim:
+          claimName: {{template "fullname" .}}-shared-pvc
+      - name: lnd-bob-pvc
+        persistentVolumeClaim:
+          claimName: {{template "bob.fullname" .}}-pvc
+      - name: btcd-pvc
+        persistentVolumeClaim:
+          claimName: {{template "btcd.fullname" .}}-pvc
+      - name: secret-volume-alice
+        secret:
+          secretName: {{template "alice.fullname" .}}-wallet-secret
+      - name: secret-volume-bob
+        secret:
+          secretName: {{template "bob.fullname" .}}-wallet-secret

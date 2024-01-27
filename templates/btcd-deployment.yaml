@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{template "btcd.fullname" .}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{template "btcd.fullname" .}}
+  template:
+    metadata:
+      labels:
+        app: {{template "btcd.fullname" .}}
+    spec:
+      hostname: {{template "btcd.fullname" .}}
+      containers:
+      - name: btcd
+        image: orfeas0/btcd:latest
+        command: ["./start-btcd.sh"]
+        env:
+        - name: RPCUSER
+          valueFrom:
+            secretKeyRef:
+              name: {{template "btcd.fullname" .}}-secret
+              key: rpcuser
+        - name: RPCPASS
+          valueFrom:
+            secretKeyRef:
+              name: {{template "btcd.fullname" .}}-secret
+              key: rpcpass
+        - name: NETWORK
+          value: simnet
+        - name: MINING_ADDRESS
+          valueFrom:
+           secretKeyRef:
+             name: {{template "btcd.fullname" .}}-secret
+             key: miningaddress
+        volumeMounts:
+        - name: shared-persistent-storage
+          mountPath: /rpc
+        - name: bitcoin-persistent-storage
+          mountPath: /data
+      volumes:
+      - name: shared-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{template "fullname" .}}-shared-pvc
+      - name: bitcoin-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{template "btcd.fullname" .}}-pvc
+
+

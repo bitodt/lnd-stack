@@ -1,0 +1,45 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{template "bob.fullname" .}}-lndinit-job
+spec:
+  backoffLimit: 1
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app: {{template "bob.fullname" .}}-lndinit
+    spec:
+      serviceAccountName: {{template "fullname" .}}-lnd-provision-account
+      containers:
+      - name: lndinit
+        image: orfeas0/lndinit:latest
+        imagePullPolicy: Always
+        command: [ '/init-wallet-k8s.sh' ]
+        env:
+        - name: WALLET_SECRET_NAME
+          value: {{template "bob.fullname" .}}-wallet-secret
+        - name: WALLET_DIR
+          value: /root/.lnd/data/chain/bitcoin/simnet
+        - name: CERT_DIR
+          value: /root/.lnd
+        - name: UPLOAD_RPC_SECRETS
+          value: '0'
+        # - name: RPC_SECRETS_NAME
+        #   value: lndinit-rpc-secrets
+        - name: NETWORK
+          value: simnet
+        - name: WALLET_PASSWORD_FILE
+          value: /root/.lnd/data/chain/bitcoin/simnet/walletpassword
+        - name: START_LND
+          value: '0'
+        volumeMounts:
+        - name: lnd-pvc
+          mountPath: /root/.lnd
+      restartPolicy: Never
+      volumes:
+      - name: lnd-pvc
+        persistentVolumeClaim:
+          claimName: {{template "bob.fullname" .}}-pvc
