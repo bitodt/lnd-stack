@@ -1,5 +1,7 @@
 # btcd & lnd stack
 
+<img src="btcln.png">
+
 # CAUTION
 This setup should only be used for development purposes, and by default on simnet. Do not use on mainchain with real sats.
 
