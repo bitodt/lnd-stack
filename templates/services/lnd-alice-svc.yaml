@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{template "alice.fullname" .}}-svc
+spec:
+  selector:
+    app: {{template "alice.fullname" .}}
+  ports:
+    - name: lndport
+      protocol: TCP
+      port: 9735
+      targetPort: 9735
+    - name: promport
+      protocol: TCP
+      port: 8989
+      targetPort: 8989
+    - name: grpcport
+      protocol: TCP
+      port: 10009
+      targetPort: 10009
