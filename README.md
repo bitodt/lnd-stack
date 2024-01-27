@@ -1,7 +1,7 @@
 # btcd & lnd stack
 
 # CAUTION
-This setup should only be used for development purposes. 
+This setup should only be used for development purposes, and by default on simnet. Do not use on mainchain with real sats.
 
 ## Installation (requires an active kubernetes cluster and helm)
 
