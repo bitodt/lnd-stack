@@ -2,7 +2,7 @@
 
 # The script is pausing at multiple points of its execution by 
 # SMALLSTEP (just a pause for you to read the progress)
-# BIGSTEP (when a sync is needed and we need to wait more)
+# BIGSTEP (when a sync is needed and we need to wait more. You might need to increase this, depending on your node's compute power)
 SMALLSTEP=1 # Recommended minimum: 1
 BIGSTEP=7 # Recommended minimum: 7
 
