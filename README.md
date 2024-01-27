@@ -4,8 +4,9 @@
 This setup should only be used for development purposes, and by default on simnet. Do not use on mainchain with real sats.
 
 ## Installation (requires an active kubernetes cluster and helm)
+The stack uses images generated with these [Dockerfiles](https://github.com/orfeas0/lnd-stack-dockerfiles).
 
-To install the stack, you need a kubernetes cluster, with kubectl and helm connected to it. For a quick local setup, please check out [minikube](https://minikube.sigs.k8s.io/docs/).
+To install the stack, you need a kubernetes cluster, and the command-line tools _kubectl_ and _helm_. For a quick local setup, please check out [minikube](https://minikube.sigs.k8s.io/docs/).
 
 To install the stack, just run in a shell (change release name to your liking):
 ```shell
@@ -50,6 +51,7 @@ cd scripts
 export RELEASE_NAME=lndstack # same as used for installation
 ./run_demo.sh
 ```
+It can be run multiple times (**not in parallel**), and each time it will create a new default wallet (for minted coins), and a new channel.
 
 # Uninstall
 Remove your installation with
