@@ -4,4 +4,4 @@ description: A btcd node with 2 lnd nodes. Wallet initalised by lndinit jobs.
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
-icon: btcln.png
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bitcoin_over_Lightning_Network.svg/1280px-Bitcoin_over_Lightning_Network.svg.png
