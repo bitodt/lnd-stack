@@ -1,0 +1,38 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{template "grafana.fullname" .}}-dashboards-job
+spec:
+  backoffLimit: 1
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app: {{template "grafana.fullname" .}}-dashboards
+    spec:
+      containers:
+      - name: downloader
+        image: busybox
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo Downloading lndmon grafana dashboards...
+          wget -O /etc/grafana/provisioning/dashboards/chain.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/chain.json &&
+          wget -O /etc/grafana/provisioning/dashboards/channels.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/channels.json &&
+          wget -O /etc/grafana/provisioning/dashboards/dashboard.yml https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/dashboard.yml &&
+          wget -O /etc/grafana/provisioning/dashboards/network.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/network.json &&
+          wget -O /etc/grafana/provisioning/dashboards/peers.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/peers.json &&
+          wget -O /etc/grafana/provisioning/dashboards/perf.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/perf.json &&
+          wget -O /etc/grafana/provisioning/dashboards/routing.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/routing.json
+          echo Download complete!
+        volumeMounts:
+            - name: grafana-dashboards
+              mountPath: /etc/grafana/provisioning/dashboards
+      restartPolicy: Never
+      volumes:
+      - name: grafana-dashboards
+        persistentVolumeClaim:
+            claimName: {{template "grafana.fullname" .}}-dashboards-pvc

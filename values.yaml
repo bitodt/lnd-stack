@@ -13,3 +13,12 @@ alice:
 bob:
   pvc:
     size: 5Gi
+prometheus:
+  pvc:
+    size: 1Gi
+grafana:
+  pvc:
+    size: 1Gi
+  dashboards:
+    pvc:
+      size: 1Gi

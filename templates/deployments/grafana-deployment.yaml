@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{template "grafana.fullname" .}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{template "grafana.fullname" .}}
+  template:
+    metadata:
+      labels:
+        app: {{template "grafana.fullname" .}}
+    spec:
+      initContainers:
+      - name: downloader
+        image: busybox
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo Downloading lndmon grafana dashboards...
+          wget -O /etc/grafana/provisioning/dashboards/chain.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/chain.json &&
+          wget -O /etc/grafana/provisioning/dashboards/channels.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/channels.json &&
+          wget -O /etc/grafana/provisioning/dashboards/dashboard.yml https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/dashboard.yml &&
+          wget -O /etc/grafana/provisioning/dashboards/network.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/network.json &&
+          wget -O /etc/grafana/provisioning/dashboards/peers.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/peers.json &&
+          wget -O /etc/grafana/provisioning/dashboards/perf.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/perf.json &&
+          wget -O /etc/grafana/provisioning/dashboards/routing.json https://raw.githubusercontent.com/lightninglabs/lndmon/master/grafana/provisioning/dashboards/routing.json
+          echo Download complete!
+        volumeMounts:
+            - name: grafana-dashboards
+              mountPath: /etc/grafana/provisioning/dashboards
+      containers:
+        - name: grafana
+          image: grafana/grafana:6.2.0
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources
+            - name: grafana-dashboards
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+      volumes:
+        - name: grafana-datasources
+          configMap:
+            name: {{template "grafana.fullname" .}}-config-datasources
+        - name: grafana-dashboards
+          persistentVolumeClaim:
+            claimName: {{template "grafana.fullname" .}}-dashboards-pvc
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: {{template "grafana.fullname" .}}-pvc

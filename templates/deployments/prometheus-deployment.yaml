@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{template "prometheus.fullname" .}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{template "prometheus.fullname" .}}
+  template:
+    metadata:
+      labels:
+        app: {{template "prometheus.fullname" .}}
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.10.0
+          command: ["prometheus", "--config.file=/etc/prometheus/prometheus.yml", "--query.max-samples=31250000", "--query.max-concurrency=2"]
+          volumeMounts:
+            - name: prometheus-config
+              mountPath: /etc/prometheus/
+            - name: prometheus-storage
+              mountPath: /prometheus
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: {{template "prometheus.fullname" .}}-config
+        - name: prometheus-storage
+          persistentVolumeClaim:
+            claimName: {{template "prometheus.fullname" .}}-pvc

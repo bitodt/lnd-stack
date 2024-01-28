@@ -43,6 +43,20 @@ Expand the name of the debugger pod.
 {{- end }}
 
 {{/*
+Expand the name of the prometheus pod.
+*/}}
+{{- define "prometheus.fullname" -}}
+{{- printf "%s-%s" (include "fullname" .) "prometheus" | trunc 53 | trimSuffix "-" -}}
+{{- end }}
+
+{{/*
+Expand the name of the grafana pod.
+*/}}
+{{- define "grafana.fullname" -}}
+{{- printf "%s-%s" (include "fullname" .) "grafana" | trunc 53 | trimSuffix "-" -}}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "lnd-stack.labels" -}}

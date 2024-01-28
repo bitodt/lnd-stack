@@ -16,7 +16,7 @@ spec:
       containers:
       - name: bob
         image: orfeas0/lnd:latest
-        command: ["./start-lnd.sh", "--wallet-unlock-password-file=/root/.lnd/data/chain/bitcoin/simnet/walletpassword"]
+        command: ["./start-lnd.sh", "--tlsextradomain={{template "bob.fullname" .}}-svc", "--prometheus.enable", "--prometheus.listen=0.0.0.0:8989", "--wallet-unlock-password-file=/root/.lnd/data/chain/bitcoin/simnet/walletpassword"]
         env:
         - name: RPCHOST
           value: {{template "btcd.fullname" .}}

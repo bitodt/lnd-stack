@@ -1,0 +1,30 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{template "grafana.fullname" .}}-post-start-job
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+spec:
+  backoffLimit: 5
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app: {{template "grafana.fullname" .}}-post-start
+    spec:
+      containers:
+      - name: post-start
+        image: orfeas0/lndmon_post_start:latest
+        env:
+        - name: GRAFANA_USER
+          value: admin
+        - name: GRAFANA_PASS
+          value: admin
+        - name: GRAFANA_HOST
+          value: {{template "grafana.fullname" .}}-svc
+        - name: GRAFANA_PORT
+          value: '3000'
+      restartPolicy: Never

@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{template "alice.fullname" .}}-lndmon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{template "alice.fullname" .}}-lndmon
+  template:
+    metadata:
+      labels:
+        app: {{template "alice.fullname" .}}-lndmon
+    spec:
+      containers:
+        - name: lndmon
+          image: lightninglabs/lndmon:v0.2.6
+          env:
+          - name: LND_HOST
+            value:  {{template "alice.fullname" .}}-svc
+          - name: LND_NETWORK
+            value: simnet
+          - name: TLS_CERT_PATH
+            value: /root/.lnd/tls.cert
+          - name: MACAROON_PATH
+            value: /root/.lnd/data/chain/bitcoin/simnet/
+          ports:
+            - containerPort: 9092
+          volumeMounts:
+            - name: lnd-pvc
+              mountPath: /root/.lnd
+          command: ["lndmon", "--prometheus.listenaddr=0.0.0.0:9092", "--lnd.network=$(LND_NETWORK)", "--lnd.host=$(LND_HOST)", "--lnd.macaroondir=/root/.lnd/data/chain/bitcoin/simnet/", "--lnd.tlspath=/root/.lnd/tls.cert"]
+      volumes:
+        - name: lnd-pvc
+          persistentVolumeClaim:
+            claimName: {{template "alice.fullname" .}}-pvc

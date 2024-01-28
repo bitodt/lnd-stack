@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{template "prometheus.fullname" .}}-config
+data:
+  prometheus.yml: |
+    scrape_configs:
+    - job_name: "lndmon-alice"
+      scrape_interval: "20s"
+      static_configs:
+      - targets: ['{{template "alice.fullname" .}}-lndmon-svc:9092']
+    - job_name: "lnd-alice"
+      scrape_interval: "20s"
+      static_configs:
+      - targets: ['{{template "alice.fullname" .}}-svc:8989']
+    - job_name: "lndmon-bob"
+      scrape_interval: "20s"
+      static_configs:
+      - targets: ['{{template "bob.fullname" .}}-lndmon-svc:9092']
+    - job_name: "lnd-bob"
+      scrape_interval: "20s"
+      static_configs:
+      - targets: ['{{template "bob.fullname" .}}-svc:8989']

@@ -30,6 +30,16 @@ spec:
           mountPath: /tmp/secret-volume-alice
         - name: secret-volume-bob
           mountPath: /tmp/secret-volume-bob
+        - name: prometheus-config
+          mountPath: /etc/prometheus/
+        - name: prometheus-storage
+          mountPath: /prometheus
+        - name: grafana-datasources
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: grafana-dashboards
+          mountPath: /etc/grafana/provisioning/dashboards
+        - name: grafana-storage
+          mountPath: /var/lib/grafana
       volumes:
       - name: lnd-alice-pvc
         persistentVolumeClaim:
@@ -49,3 +59,19 @@ spec:
       - name: secret-volume-bob
         secret:
           secretName: {{template "bob.fullname" .}}-wallet-secret
+      - name: prometheus-config
+        configMap:
+          name: {{template "prometheus.fullname" .}}-config
+      - name: prometheus-storage
+        persistentVolumeClaim:
+          claimName: {{template "prometheus.fullname" .}}-pvc
+      - name: grafana-datasources
+        configMap:
+          name: {{template "grafana.fullname" .}}-config-datasources
+      - name: grafana-dashboards
+        persistentVolumeClaim:
+          claimName: {{template "grafana.fullname" .}}-dashboards-pvc
+      - name: grafana-storage
+        persistentVolumeClaim:
+          claimName: {{template "grafana.fullname" .}}-pvc
+
