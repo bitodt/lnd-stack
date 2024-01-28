@@ -85,3 +85,4 @@ kubectl delete secret $RELEASE_NAME-lnd-stack-bob-wallet-secret
 - [ ] Make monitoring optional, activated by a flag in values.yaml
 - [x] Split Prometheus/Grafana stack to 2, separate for each LND node
     - Grafana is shared, with the 2 separate Prometheus instances as data sources.
+- [ ] The setup currently works for the default namespace. Test in other namespaces, make changes if required.
