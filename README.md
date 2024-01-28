@@ -42,18 +42,27 @@ kubectl exec -it debugger_pod_name -- bash
 ```
 and check out mounted volumes as seen in the debugger.yaml *volumeMounts* section.
 
+## Monitoring
+The [lndmon](https://github.com/lightninglabs/lndmon) monitoring solution is automatically installed with the lnd stack.
+
+You can use kubernetes port-forwarding to see the dashboards.
+```
+kubectl port-forward services/$RELEASE_NAME-lnd-stack-grafana-svc 3000
+```
+and access Grafana with your browser at [localhost:3000](localhost:3000). Default credentials are admin:admin.
+
 ## Demo
 
 After making sure everything is up and running, run the demo script.
 
-The demo script creates a payment channel from Alice to Bob, sends a payment and then closes the channel.
+The demo script generates blocks, creates a payment channel from Alice to Bob, sends a payment and then closes the channel.
 
 ```
 cd scripts
 export RELEASE_NAME=lndstack # same as used for installation
 ./run_demo.sh
 ```
-It can be run multiple times (**not in parallel**), and each time it will create a new default wallet (for minted coins), and a new channel.
+It can be run multiple times (**not in parallel**), and each time it will create a new default address (for minted coins, in Alice's wallet), and a new channel.
 
 # Uninstall
 Remove your installation with
