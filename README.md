@@ -76,10 +76,12 @@ kubectl delete secret $RELEASE_NAME-lnd-stack-bob-wallet-secret
 ```
 
 # TODO
-- Better security should be considered if we move this to production
-- Better configurability of the chart
-- Error handling in charts
-- Error handling in scripts
-- More scripts for easier operations (i.e. quickly open a new channel, create and pay invoices); maybe split run_demo.sh into smaller parts/functions
-- Make debugger optional, activated by a flag in values.yaml
-- Split Prometheus/Grafana stack to 2, separate for each LND node
+- [ ] Better security should be considered if we move this to production
+- [ ] Better configurability of the chart
+- [ ] Error handling in charts
+- [ ] Error handling in scripts
+- [ ] More scripts for easier operations (i.e. quickly open a new channel, create and pay invoices); maybe split run_demo.sh into smaller parts/functions
+- [ ] Make debugger optional, activated by a flag in values.yaml
+- [ ] Make monitoring optional, activated by a flag in values.yaml
+- [x] Split Prometheus/Grafana stack to 2, separate for each LND node
+    - Grafana is shared, with the 2 separate Prometheus instances as data sources.

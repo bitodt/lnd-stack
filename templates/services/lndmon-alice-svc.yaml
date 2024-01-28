@@ -5,7 +5,7 @@ metadata:
   name: {{template "alice.fullname" .}}-lndmon-svc
 spec:
   selector:
-    app: {{template "alice.fullname" .}}-lndmon-svc
+    app: {{template "alice.fullname" .}}-lndmon
   ports:
     - protocol: TCP
       port: 9092

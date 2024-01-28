@@ -7,8 +7,13 @@ data:
   datasource.yaml: |
     apiVersion: 1
     datasources:
-      - name: Prometheus
+      - name: Bob-Prometheus
         type: prometheus
         access: proxy
-        url: http://{{template "prometheus.fullname" .}}-svc:9090
+        url: http://{{template "bob.fullname" .}}-prometheus-svc:9090
+        editable: true
+      - name: Alice-Prometheus
+        type: prometheus
+        access: proxy
+        url: http://{{template "alice.fullname" .}}-prometheus-svc:9090
         editable: true
