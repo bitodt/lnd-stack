@@ -1,7 +1,7 @@
 btcd:
   secret:
-    rpcuser: cnBjdXNlcg==
-    rpcpass: cnBjcGFzcw==
+    rpcuser: rpcuser
+    rpcpass: rpcpass
   pvc:
     size: 10Gi
 shared:
