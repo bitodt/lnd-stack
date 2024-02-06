@@ -10,15 +10,16 @@ The stack uses images generated with these [Dockerfiles](https://github.com/orfe
 
 To install the stack, you need a kubernetes cluster, and the command-line tools _kubectl_ and _helm_. For a quick local setup, please check out [minikube](https://minikube.sigs.k8s.io/docs/).
 
-To install the stack, just run in a shell (change release name to your liking):
+To install the stack, just run in a shell (namespace and release name are optional):
 ```shell
+export NAMESPACE=default
 export RELEASE_NAME=lndstack
 helm upgrade $RELEASE_NAME --install .
 ```
 ## Verify everything is running smoothly
 
 ```
-kubectl get pods
+kubectl -n $NAMESPACE get pods
 ```
 You should see 2 completed jobs:
 - alice-lndinit
@@ -38,7 +39,7 @@ The **btcd** *deployment* is a btcd node on simnet.
 
 The **debugger** *deployment* is a debian pod with all volumes and secrets mounted, for debugging purposes. You can enter its shell with
 ```
-kubectl exec -it debugger_pod_name -- bash
+kubectl -n $NAMESPACE exec -it debugger_pod_name -- bash
 ```
 and check out mounted volumes as seen in the debugger.yaml *volumeMounts* section.
 
@@ -47,7 +48,7 @@ The [lndmon](https://github.com/lightninglabs/lndmon) monitoring solution is aut
 
 You can use kubernetes port-forwarding to see the dashboards.
 ```
-kubectl port-forward services/$RELEASE_NAME-lnd-stack-grafana-svc 3000
+kubectl -n $NAMESPACE port-forward services/$RELEASE_NAME-lnd-stack-grafana-svc 3000
 ```
 and access Grafana with your browser at [localhost:3000](localhost:3000). Default credentials are admin:admin.
 
@@ -71,8 +72,8 @@ helm uninstall $RELEASE_NAME
 ```
 and delete the wallets with
 ```
-kubectl delete secret $RELEASE_NAME-lnd-stack-alice-wallet-secret
-kubectl delete secret $RELEASE_NAME-lnd-stack-bob-wallet-secret
+kubectl -n $NAMESPACE delete secret $RELEASE_NAME-lnd-stack-alice-wallet-secret
+kubectl -n $NAMESPACE delete secret $RELEASE_NAME-lnd-stack-bob-wallet-secret
 ```
 
 # TODO
@@ -85,4 +86,4 @@ kubectl delete secret $RELEASE_NAME-lnd-stack-bob-wallet-secret
 - [ ] Make monitoring optional, activated by a flag in values.yaml
 - [x] Split Prometheus/Grafana stack to 2, separate for each LND node
     - Grafana is shared, with the 2 separate Prometheus instances as data sources.
-- [ ] The setup currently works for the default namespace. Test in other namespaces, make changes if required.
+- [x] The setup currently works for the default namespace. Test in other namespaces, make changes if required.
